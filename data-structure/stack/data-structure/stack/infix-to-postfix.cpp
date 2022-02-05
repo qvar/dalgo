@@ -23,7 +23,7 @@ string infixToPostfix(string s)
     for (char x: s)
     {
         //for operand, just output it
-        if ((x >= '0' && x <='9') || (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z'))
+        if ((x >= '0' && x <='9') || (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z')) // only 0-9 were needed. what about multi digit ??
         {
             output += x;
         }
@@ -42,7 +42,7 @@ string infixToPostfix(string s)
         }
         else // for operator
         {
-            while (!st.empty() && precedence(x) <= precedence(st.top()))
+            while (!st.empty() && precedence(x) <= precedence(st.top())) // don't miss <= 
             {
                 output += st.top();
                 st.pop();
@@ -50,7 +50,7 @@ string infixToPostfix(string s)
             st.push(x);
         }
     }
-    while (!st.empty())
+    while (!st.empty()) // don't forget to flush the rest
     {
         output += st.top();
         st.pop();
