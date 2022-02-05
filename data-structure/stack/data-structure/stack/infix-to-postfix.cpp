@@ -5,68 +5,61 @@
 
 using namespace std;
 
-//Function to return precedence of operators
-int prec(char c) {
-	if(c == '^')
-		return 3;
-	else if(c == '/' || c=='*')
-		return 2;
-	else if(c == '+' || c == '-')
-		return 1;
-	else
-		return -1;
+int precedence(char x)
+{
+    if (x == '^')
+        return 3;
+    if (x == '*' || x == '/')
+        return 2;
+    if (x == '+' || x == '-')
+        return 1;
+    return 0;
 }
 
-// The main function to convert infix expression to postfix expression
-void infixToPostfix(string s) {
-
-	stack<char> st; //For stack operations, we are using C++ built in stack
-	string result;
-
-	for(int i = 0; i < s.length(); i++) {
-		char c = s[i];
-
-		// If the scanned character is an operand, add it to output string.
-		if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
-			result += c;
-
-		// If the scanned character is an ‘(‘, push it to the stack.
-		else if(c == '(')
-			st.push('(');
-
-		// If the scanned character is an ‘)’,  pop and to output string from the stack until an ‘(‘ is encountered.
-		else if(c == ')') {
-			while(st.top() != '(')
-			{
-				result += st.top();
-				st.pop();
-			}
-			st.pop();
-		}
-
-		//If an operator is scanned
-		else {
-			while(!st.empty() && prec(s[i]) <= prec(st.top())) {
-				result += st.top();
-				st.pop();
-			}
-			st.push(c);
-		}
-	}
-
-	// Pop all the remaining elements from the stack
-	while(!st.empty()) {
-		result += st.top();
-		st.pop();
-	}
-
-	cout << result << endl;
+string infixToPostfix(string s)
+{
+    stack<char> st;
+    string output="";
+    for (char x: s)
+    {
+        //for operand, just output it
+        if ((x >= '0' && x <='9') || (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z'))
+        {
+            output += x;
+        }
+        else if (x == '(')
+        {
+            st.push(x);
+        }
+        else if (x == ')')
+        {
+            while (st.top() != '(')
+            {
+                output += st.top();
+                st.pop();
+            }
+            st.pop();
+        }
+        else // for operator
+        {
+            while (!st.empty() && precedence(x) <= precedence(st.top()))
+            {
+                output += st.top();
+                st.pop();
+            }
+            st.push(x);
+        }
+    }
+    while (!st.empty())
+    {
+        output += st.top();
+        st.pop();
+    }
+    return output;
 }
 
-//Driver program to test above functions
 int main() {
 	string exp = "a+b*(c^d-e)^(f+g*h)-i";
-	infixToPostfix(exp);
-    // Output: abcd^e-fgh*+^*+i-
+	cout << infixToPostfix(exp);    // Output: abcd^e-fgh*+^*+i-
 	return 0;
 }
